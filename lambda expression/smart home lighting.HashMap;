@@ -1,0 +1,47 @@
+import java.util.HashMap;
+import java.util.Map;
+
+// Functional interface for light behavior
+@FunctionalInterface
+interface LightBehavior {
+    void activate();
+}
+
+public class SmartHomeLighting {
+
+    public static void main(String[] args) {
+        // Define reusable light actions
+        LightBehavior turnOff = () -> System.out.println("Lights OFF");
+
+        // Define behaviors using lambdas
+        Map<String, LightBehavior> lightBehaviors = new HashMap<>();
+        
+        lightBehaviors.put("motion", () -> turnOnLights("Warm White", 70));
+        lightBehaviors.put("night_time", () -> turnOnLights("Dim Blue", 20));
+        lightBehaviors.put("morning", () -> turnOnLights("Bright White", 100));
+        lightBehaviors.put("voice_on", () -> turnOnLights("Cool White", 80));
+        lightBehaviors.put("voice_off", turnOff);
+
+        // Simulate trigger input
+        handleTrigger("motion", lightBehaviors);
+        handleTrigger("night_time", lightBehaviors);
+        handleTrigger("voice_on", lightBehaviors);
+        handleTrigger("voice_off", lightBehaviors);
+        handleTrigger("unknown_trigger", lightBehaviors); // not defined
+    }
+
+    // Method to simulate turning on lights
+    public static void turnOnLights(String color, int brightness) {
+        System.out.println("Lights ON → Color: " + color + ", Brightness: " + brightness + "%");
+    }
+
+    // Trigger handler
+    public static void handleTrigger(String trigger, Map<String, LightBehavior> behaviors) {
+        LightBehavior behavior = behaviors.get(trigger);
+        if (behavior != null) {
+            behavior.activate();
+        } else {
+            System.out.println("No behavior defined for trigger: " + trigger);
+        }
+    }
+}
